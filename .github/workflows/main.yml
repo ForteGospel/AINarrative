@@ -24,13 +24,14 @@ jobs:
       - name: Checkout Repo
         uses: actions/checkout@v4
 
-      # Copy all three specific files into the deployment folder
+      # Copy the specific files and the entire asset folder
       - name: Isolate Files
         run: |
           mkdir public-dist
           cp index.html public-dist/
           cp script.js public-dist/
           cp style.css public-dist/
+          cp -r asset/ public-dist/    # -r copies the folder and all its contents
 
       - name: Upload Page Artifact
         uses: actions/upload-pages-artifact@v3
