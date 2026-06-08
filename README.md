@@ -19,7 +19,6 @@ This is a static site with no build step.
 Recommended (a static server, since some browsers block local image loads):
 
 ```
-cd game
 python3 -m http.server 8000
 ```
 
@@ -37,7 +36,7 @@ file:// loading is unreliable.
 
 ## Project layout
 ```
-game/
+.
 ├── index.html              # scene markup, HUD, SVG defs (god-rays, heat-haze filter), music toggle
 ├── style.css               # absolute-positioning + theme + atmospheric effects
 ├── script.js               # scene data, render loop, dialogue, god-rays, shimmer, audio
@@ -96,10 +95,6 @@ game/
   loaded asynchronously so the page is interactive immediately. Mute
   button (circular amber, top-left) toggles `muted` and shows a
   diagonal strike when off.
-
-## What's left
-- **Per-material sprite art** — replace the brown radial-gradient
-  placeholder with distinct sprites for clay / natron / scroll / amulet.
 
 ## Tuning notes
 - Each scene's `godRays: {...}` block merges over `godRays.defaults` in

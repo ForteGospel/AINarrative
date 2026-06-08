@@ -90,8 +90,8 @@ const scenes = {
       },
     ],
     items: [
-      { id: "clay", top: "60%", left: "50%", label: "Wet river clay" },
-      { id: "natron", top: "25%", left: "20%", label: "Natron — purifying salt" },
+      { id: "clay", top: "60%", left: "50%", label: "Wet river clay", image: "Clay.png" },
+      { id: "natron", top: "25%", left: "20%", label: "Natron — purifying salt", image: "Salt.png" },
     ],
   },
 
@@ -126,8 +126,8 @@ const scenes = {
       },
     ],
     items: [
-      { id: "scroll-emet", top: "65%", left: "51%", label: "Scroll bearing אמת" },
-      { id: "heart-amulet", top: "24%", left: "91%", label: "Heart amulet" },
+      { id: "scroll-emet", top: "65%", left: "51%", label: "Scroll bearing אמת", image: "Scroll.png" },
+      { id: "heart-amulet", top: "24%", left: "91%", label: "Heart amulet", image: "Heart.png" },
     ],
   },
 
@@ -349,6 +349,7 @@ function renderScene(sceneId) {
     el.style.top = item.top;
     el.style.left = item.left;
     el.title = item.label;
+    if (item.image) el.style.backgroundImage = `url("assets/${item.image}")`;
     el.addEventListener("click", () => {
       showMessage(`Picked up: ${item.label}.`);
       pickUp(item.id);
@@ -361,7 +362,14 @@ function renderScene(sceneId) {
     scene.slots.forEach((slot) => {
       const el = document.createElement("div");
       el.className = "assembly-slot";
-      if (game.assembly[slot.id]) el.classList.add("filled");
+      const placedItemId = game.assembly[slot.id];
+      if (placedItemId) {
+        el.classList.add("filled");
+        const item = findItem(placedItemId);
+        if (item && item.image) {
+          el.style.backgroundImage = `url("assets/${item.image}")`;
+        }
+      }
       el.style.top = slot.top;
       el.style.left = slot.left;
       el.title = slot.label;
@@ -458,10 +466,12 @@ function renderInventory() {
   inventoryEl.appendChild(label);
 
   game.inventory.forEach((itemId) => {
+    const item = findItem(itemId);
     const slot = document.createElement("div");
     slot.className = "slot";
     if (game.selectedItem === itemId) slot.classList.add("selected");
-    slot.title = itemId;
+    slot.title = item ? item.label : itemId;
+    if (item && item.image) slot.style.backgroundImage = `url("assets/${item.image}")`;
     slot.addEventListener("click", () => {
       game.selectedItem = game.selectedItem === itemId ? null : itemId;
       if (game.selectedItem) {
@@ -473,13 +483,18 @@ function renderInventory() {
   });
 }
 
-function prettyLabel(itemId) {
-  // Look the item up across scenes to grab its label.
+function findItem(itemId) {
+  // Look the item config up across all scenes.
   for (const scene of Object.values(scenes)) {
-    const found = scene.items.find((i) => i.id === itemId);
-    if (found) return found.label;
+    const found = scene.items && scene.items.find((i) => i.id === itemId);
+    if (found) return found;
   }
-  return itemId;
+  return null;
+}
+
+function prettyLabel(itemId) {
+  const item = findItem(itemId);
+  return item ? item.label : itemId;
 }
 
 // --- Section 4: assembly puzzle ------------------------------------
