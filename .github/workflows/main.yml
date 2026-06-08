@@ -31,7 +31,6 @@ jobs:
           cp index.html public-dist/
           cp script.js public-dist/
           cp style.css public-dist/
-          cp -r assets/ public-dist/    # -r copies the folder and all its contents
 
       - name: Upload Page Artifact
         uses: actions/upload-pages-artifact@v3
